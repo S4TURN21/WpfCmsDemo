@@ -1,0 +1,6 @@
+@Remake.WebApi_HostAddress = http://localhost:5031
+
+GET {{Remake.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

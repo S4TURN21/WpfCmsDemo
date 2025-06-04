@@ -1,0 +1,977 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Prime.Wpf">
+    <FontFamily x:Key="PrimeIcons">pack://application:,,,/Prime.Wpf;component/Fonts/#primeicons</FontFamily>
+    <FontFamily x:Key="Inter">pack://application:,,,/Prime.Wpf;component/Fonts/#Inter Variable</FontFamily>
+
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    <local:BorderClipConverter x:Key="BorderClipConverter" />
+
+    <Style TargetType="{x:Type ScrollViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid x:Name="Grid"
+                          Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Rectangle x:Name="Corner"
+                                   Grid.Column="1"
+                                   Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                   Grid.Row="1" />
+                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                CanHorizontallyScroll="False"
+                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                CanVerticallyScroll="False"
+                                                Grid.Column="0"
+                                                Content="{TemplateBinding Content}"
+                                                CanContentScroll="{TemplateBinding CanContentScroll}"
+                                                Grid.Row="0" />
+                        <ScrollBar x:Name="PART_VerticalScrollBar"
+                                   AutomationProperties.AutomationId="VerticalScrollBar"
+                                   Cursor="Arrow"
+                                   Grid.Column="1"
+                                   Maximum="{TemplateBinding ScrollableHeight}"
+                                   Minimum="0"
+                                   Grid.Row="0"
+                                   Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   ViewportSize="{TemplateBinding ViewportHeight}"
+                                   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                        <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                   AutomationProperties.AutomationId="HorizontalScrollBar"
+                                   Cursor="Arrow"
+                                   Grid.Column="0"
+                                   Maximum="{TemplateBinding ScrollableWidth}"
+                                   Minimum="0"
+                                   Orientation="Horizontal"
+                                   Grid.Row="1"
+                                   Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   ViewportSize="{TemplateBinding ViewportWidth}"
+                                   Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="local:ScrollViewerAssist.IgnorePadding"
+                                 Value="False">
+                            <Setter TargetName="PART_ScrollContentPresenter"
+                                    Property="Margin"
+                                    Value="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--#region Input -->
+    <Style x:Key="Prime.InputText"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Background"
+                Value="#FFFFFF" />
+        <Setter Property="BorderBrush"
+                Value="#CBD5E1" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="local:TextBoxAssist.CornerRadius"
+                Value="6" />
+        <Setter Property="Foreground"
+                Value="#4b5563" />
+        <Setter Property="SelectionBrush"
+                Value="#E2E8F0" />
+        <Setter Property="SelectionTextBrush"
+                Value="#020617" />
+        <Setter Property="Padding"
+                Value="10.5,8.75" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Validation.ErrorTemplate"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <ItemsControl Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      ItemsSource="{local:Transition local:BoxShadowAssist.BoxShadow, 0.2}"
+                                      Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{local:Transition BorderBrush, 0.2}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="{TemplateBinding local:TextBoxAssist.CornerRadius}"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              local:ScrollViewerAssist.IgnorePadding="True"
+                                              Focusable="false"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden" />
+                                <TextBlock x:Name="placeholder"
+                                           Text="{Binding Path=(local:TextBoxAssist.Placeholder), RelativeSource={RelativeSource TemplatedParent}}"
+                                           Foreground="#64748b"
+                                           Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text"
+                                           Value="" />
+                                <Condition Property="IsFocused"
+                                           Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="placeholder"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="3"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#BFDBFE" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="Validation.HasError"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#E24C4C" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        Value="0.6" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Prime.InputPassword"
+           TargetType="{x:Type PasswordBox}">
+        <Setter Property="Background"
+                Value="#FFFFFF" />
+        <Setter Property="BorderBrush"
+                Value="#CBD5E1" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="local:TextBoxAssist.CornerRadius"
+                Value="6" />
+        <Setter Property="Foreground"
+                Value="#4b5563" />
+        <Setter Property="SelectionBrush"
+                Value="#E2E8F0" />
+        <Setter Property="SelectionTextBrush"
+                Value="#020617" />
+        <Setter Property="Padding"
+                Value="10.5,8.75" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Validation.ErrorTemplate"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
+                    <Grid>
+                        <ItemsControl Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      ItemsSource="{local:Transition local:BoxShadowAssist.BoxShadow, 0.2}"
+                                      Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{local:Transition BorderBrush, 0.2}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="{TemplateBinding local:TextBoxAssist.CornerRadius}"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          local:ScrollViewerAssist.IgnorePadding="True"
+                                          Focusable="false"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="3"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#BFDBFE" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="Validation.HasError"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#E24C4C" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        Value="0.6" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region Button -->
+    <Style x:Key="Prime.CheckBox"
+           TargetType="{x:Type CheckBox}">
+        <Setter Property="Background"
+                Value="#FFFFFF" />
+        <Setter Property="BorderBrush"
+                Value="#CBD5E1" />
+        <Setter Property="BorderThickness"
+                Value="1,1,1,1" />
+        <Setter Property="Foreground"
+                Value="#334155" />
+        <Setter Property="local:TextBoxAssist.CornerRadius"
+                Value="4,4,4,4" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Padding"
+                Value="7,0,0,0" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ItemsControl Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      ItemsSource="{local:Transition local:BoxShadowAssist.BoxShadow, 0.2}"
+                                      Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <Border Grid.Column="0"
+                                Width="21"
+                                Height="21"
+                                Background="{local:Transition Background, 0.2}"
+                                BorderBrush="{local:Transition BorderBrush, 0.2}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding local:TextBoxAssist.CornerRadius}"
+                                SnapsToDevicePixels="True">
+                            <TextBlock x:Name="optionMark"
+                                       Text="&#xe909;"
+                                       Foreground="#FFFFFF"
+                                       FontFamily="PrimeIcons"
+                                       Visibility="Hidden"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                        </Border>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter TargetName="optionMark"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="IsChecked"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#3B82F6" />
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="BorderBrush"
+                        Value="#3B82F6" />
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="4"
+                                             ShadowDepth="3"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#BFDBFE" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <ControlTemplate x:Key="ButtonTemplate"
+                     TargetType="{x:Type ButtonBase}">
+        <Grid>
+            <!--<ItemsControl Background="Transparent"
+                          BorderBrush="Transparent"
+                          ItemsSource="{TemplateBinding local:BoxShadowAssist.BoxShadow}"
+                          Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>-->
+            <AdornerDecorator>
+                <Grid>
+                    <ItemsControl Background="Transparent"
+                                  BorderBrush="Transparent"
+                                  ItemsSource="{local:Transition local:BoxShadowAssist.BoxShadow, 0.2}"
+                                  Focusable="False">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Border x:Name="border"
+                            Background="{local:Transition Background, 0.2}"
+                            BorderBrush="{local:Transition BorderBrush, 0.2}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding local:ButtonAssist.CornerRadius}"
+                            SnapsToDevicePixels="true">
+                    </Border>
+                </Grid>
+            </AdornerDecorator>
+            <local:Ripple Padding="{TemplateBinding Padding}"
+                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                          Content="{TemplateBinding Content}"
+                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                          Focusable="False"
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                <local:Ripple.Clip>
+                    <MultiBinding Converter="{StaticResource BorderClipConverter}">
+                        <Binding ElementName="border"
+                                 Path="ActualWidth" />
+                        <Binding ElementName="border"
+                                 Path="ActualHeight" />
+                        <Binding ElementName="border"
+                                 Path="CornerRadius" />
+                        <Binding ElementName="border"
+                                 Path="BorderThickness" />
+                    </MultiBinding>
+                </local:Ripple.Clip>
+            </local:Ripple>
+            <!--<Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    SnapsToDevicePixels="True"
+                    CornerRadius="{TemplateBinding local:ButtonAssist.CornerRadius}">
+                <ContentPresenter x:Name="contentPresenter"
+                                  Focusable="False"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}"
+                                  RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Border>-->
+        </Grid>
+        <ControlTemplate.Triggers>
+            <!--<Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="4"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#9DC1FB" />
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="2"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#FFFFFF" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>-->
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="Prime.Button"
+           TargetType="{x:Type ButtonBase}">
+        <Setter Property="local:RippleAssist.Feedback"
+                Value="White" />
+        <Setter Property="Background"
+                Value="#3B82F6" />
+        <Setter Property="Background"
+                Value="#3B82F6" />
+        <Setter Property="BorderBrush"
+                Value="#3B82F6" />
+        <Setter Property="FontWeight"
+                Value="SemiBold" />
+        <Setter Property="Foreground"
+                Value="#FFFFFF" />
+        <Setter Property="Padding"
+                Value="14, 8.75" />
+        <Setter Property="local:ButtonAssist.CornerRadius"
+                Value="6,6,6,6" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <!--<Setter Property="Cursor"
+                Value="Hand" />-->
+        <Setter Property="Template"
+                Value="{StaticResource ButtonTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#2563EB" />
+                <Setter Property="BorderBrush"
+                        Value="#2563EB" />
+            </Trigger>
+            <Trigger Property="IsMouseCaptured"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#1D4ED8" />
+                <Setter Property="BorderBrush"
+                        Value="#1D4ED8" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="4"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#9DC1FB" />
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="2"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#FFFFFF" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Opacity"
+                        Value="0.6" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Prime.Button.Outlined"
+           TargetType="{x:Type ButtonBase}"
+           BasedOn="{StaticResource Prime.Button}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="#BFDBFE" />
+        <Setter Property="Foreground"
+                Value="#3B82F6" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#0A3B82F6" />
+                <Setter Property="BorderBrush"
+                        Value="#BFDBFE" />
+            </Trigger>
+
+            <Trigger Property="IsMouseCaptured"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#293B82F6" />
+                <Setter Property="BorderBrush"
+                        Value="#BFDBFE" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Prime.Button.Text"
+           TargetType="{x:Type ButtonBase}"
+           BasedOn="{StaticResource Prime.Button}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="#3B82F6" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#0A3B82F6" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+            </Trigger>
+
+            <Trigger Property="IsMouseCaptured"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#293B82F6" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Prime.Button.Secondary"
+           TargetType="{x:Type ButtonBase}"
+           BasedOn="{StaticResource Prime.Button}">
+        <Setter Property="Background"
+                Value="#64748b" />
+        <Setter Property="BorderBrush"
+                Value="#64748b" />
+        <Setter Property="Foreground"
+                Value="#FFFFFF" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#475569" />
+                <Setter Property="BorderBrush"
+                        Value="#475569" />
+            </Trigger>
+            <Trigger Property="IsMouseCaptured"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#334155" />
+                <Setter Property="BorderBrush"
+                        Value="#334155" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="local:BoxShadowAssist.BoxShadow">
+                    <Setter.Value>
+                        <local:BoxShadowCollection>
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="4"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#B0B9C6" />
+                            <local:BoxShadow CornerRadius="6"
+                                             ShadowDepth="2"
+                                             X="0"
+                                             Y="0"
+                                             Blur="0"
+                                             Color="#FFFFFF" />
+                        </local:BoxShadowCollection>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Prime.Button.Secondary.Text"
+           TargetType="{x:Type ButtonBase}"
+           BasedOn="{StaticResource Prime.Button.Secondary}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="#64748b" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#0A64748b" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="Foreground"
+                        Value="#64748b" />
+            </Trigger>
+            <Trigger Property="IsMouseCaptured"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#2964748b" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="Foreground"
+                        Value="#64748b" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region DataTable -->
+    <Style x:Key="DataTableColumnHeaderGripper"
+           TargetType="{x:Type Thumb}">
+        <Setter Property="Width"
+                Value="8" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Cursor"
+                Value="SizeWE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataTableColumnHeader"
+           TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="Background"
+                Value="#F8FAFC" />
+        <Setter Property="BorderBrush"
+                Value="#E2E8F0" />
+        <Setter Property="BorderThickness"
+                Value="0,0,0,1" />
+        <Setter Property="FontWeight"
+                Value="SemiBold" />
+        <Setter Property="Foreground"
+                Value="#374151" />
+        <Setter Property="Padding"
+                Value="14,14" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource DataTableColumnHeaderGripper}" />
+                        <Thumb x:Name="PART_RightHeaderGripper"
+                               HorizontalAlignment="Right"
+                               Style="{StaticResource DataTableColumnHeaderGripper}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataTableCell"
+           TargetType="{x:Type DataGridCell}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="#E2E8F0" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Padding"
+                Value="14, 10.5" />
+        <Setter Property="FontWeight"
+                Value="Regular" />
+        <Setter Property="Foreground"
+                Value="#4B5563" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#EFF6FF" />
+                <Setter Property="Foreground"
+                        Value="#1D4ED8" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataTable"
+           TargetType="{x:Type DataGrid}">
+        <Setter Property="GridLinesVisibility"
+                Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush"
+                Value="#E5E7EB" />
+        <Setter Property="VerticalGridLinesBrush"
+                Value="#E5E7EB" />
+        <Setter Property="ColumnHeaderStyle"
+                Value="{StaticResource DataTableColumnHeader}" />
+        <Setter Property="CellStyle"
+                Value="{StaticResource DataTableCell}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGrid}">
+                    <Border>
+                        <ScrollViewer>
+                            <ScrollViewer.Template>
+                                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Button Command="{x:Static DataGrid.SelectAllCommand}"
+                                                Focusable="false"
+                                                Style="{DynamicResource {ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle, TypeInTargetAssembly={x:Type DataGrid}}}"
+                                                Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.All}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
+                                                                        Grid.Column="1"
+                                                                        Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                                CanContentScroll="{TemplateBinding CanContentScroll}"
+                                                                Grid.ColumnSpan="2"
+                                                                Grid.Row="1" />
+                                        <ScrollBar x:Name="PART_VerticalScrollBar"
+                                                   Grid.Column="2"
+                                                   Maximum="{TemplateBinding ScrollableHeight}"
+                                                   Orientation="Vertical"
+                                                   Grid.Row="1"
+                                                   Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                                   ViewportSize="{TemplateBinding ViewportHeight}"
+                                                   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                                        <Grid Grid.Column="1"
+                                              Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                                       Grid.Column="1"
+                                                       Maximum="{TemplateBinding ScrollableWidth}"
+                                                       Orientation="Horizontal"
+                                                       Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                                       ViewportSize="{TemplateBinding ViewportWidth}"
+                                                       Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
+                                        </Grid>
+                                    </Grid>
+                                </ControlTemplate>
+                            </ScrollViewer.Template>
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataTableColumnHeaderSmall"
+           TargetType="{x:Type DataGridColumnHeader}"
+           BasedOn="{StaticResource DataTableColumnHeader}">
+        <Setter Property="Padding"
+                Value="7,7" />
+    </Style>
+
+    <Style x:Key="DataTableCellSmall"
+           TargetType="{x:Type DataGridCell}"
+           BasedOn="{StaticResource DataTableCell}">
+        <Setter Property="Padding"
+                Value="7,7" />
+    </Style>
+
+    <Style x:Key="DataTableSmall"
+           TargetType="{x:Type DataGrid}"
+           BasedOn="{StaticResource DataTable}">
+        <Setter Property="ColumnHeaderStyle"
+                Value="{StaticResource DataTableColumnHeaderSmall}" />
+        <Setter Property="CellStyle"
+                Value="{StaticResource DataTableCellSmall}" />
+    </Style>
+    <!--#endregion-->
+
+    <Style x:Key="PrimeIcon"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily"
+                Value="{StaticResource PrimeIcons}" />
+        <Setter Property="FontWeight"
+                Value="Regular" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Times"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe90b;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Plus"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe90d;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Minus"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe90f;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Bars"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe91D;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Upload"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe934;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.User"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe939;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Trash"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe93d;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.User.Plus"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe93f;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Pencil"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe942;" />
+    </Style>
+
+    <Style x:Key="PrimeIcon.Bell"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe97c;" />
+    </Style>
+    
+    <Style x:Key="PrimeIcon.Stop"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource PrimeIcon}">
+        <Setter Property="Text"
+                Value="&#xe9d1;" />
+    </Style>
+    
+    <Storyboard x:Key="showAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(TranslateTransform.Y)"
+                         From="72"
+                         To="0"
+                         Duration="0:0:0.3" />
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0"
+                         To="1"
+                         Duration="0:0:0.3" />
+    </Storyboard>
+
+</ResourceDictionary>

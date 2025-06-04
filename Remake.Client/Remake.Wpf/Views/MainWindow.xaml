@@ -1,0 +1,413 @@
+﻿<Window x:Class="Remake.Wpf.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Remake.Wpf"
+        xmlns:viewmodels="clr-namespace:Remake.Wpf.ViewModels"
+        xmlns:controls="clr-namespace:Remake.Wpf.Controls;assembly=Remake.Wpf.Controls"
+        xmlns:services="clr-namespace:Remake.Wpf.Services"
+        xmlns:p="clr-namespace:Prime.Wpf;assembly=Prime.Wpf"
+        mc:Ignorable="d"
+        Title="Старт Онлайн"
+        Width="1280"
+        Height="720"
+        MinWidth="800"
+        MinHeight="450"
+        WindowStartupLocation="CenterScreen"
+        Background="#f1f5f9"
+        FontFamily="Inter"
+        FontSize="14"
+        Foreground="#4b5563"
+        WindowState="Maximized"
+        d:DataContext="{d:DesignInstance Type={x:Type viewmodels:MainViewModel}}"
+        Style="{StaticResource FancyWindow}">
+    <Window.Resources>
+        <Style x:Key="ExpanderHeaderStyle"
+               TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
+            <Setter Property="Foreground"
+                    Value="#334155" />
+            <Setter Property="Padding"
+                    Value="28,14" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" />
+                                <TextBlock Text="&#xe902;"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource PrimeIcons}"
+                                           Grid.Column="1" />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ExpanderStyle1"
+               TargetType="{x:Type Expander}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Border>
+                            <DockPanel>
+                                <ToggleButton x:Name="HeaderSite"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                              DockPanel.Dock="Top"
+                                              Style="{StaticResource ExpanderHeaderStyle}" />
+                                <ContentPresenter x:Name="ExpandSite"
+                                                  DockPanel.Dock="Bottom"
+                                                  Focusable="False"
+                                                  Visibility="Collapsed" />
+                            </DockPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded"
+                                     Value="true">
+                                <Setter Property="Visibility"
+                                        TargetName="ExpandSite"
+                                        Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MenuItem"
+               TargetType="{x:Type Button}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Foreground"
+                    Value="#334155" />
+            <Setter Property="Padding"
+                    Value="28,10.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="6">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#F1F5F9" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="Menu"
+                    Grid.Column="0"
+                    MinWidth="280"
+                    Background="#FFFFFF"
+                    BorderBrush="#E9ECEF"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto"
+                                  Margin="0,14">
+                        <StackPanel Grid.Column="0">
+                            <Expander Header="ЗАДАЧИ И ПРОЕКТЫ"
+                                      IsExpanded="True"
+                                      Style="{DynamicResource ExpanderStyle1}">
+                                <StackPanel>
+                                    <Button Command="{Binding NavigateToProjectsCommand}"
+                                            Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe925;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Объекты"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding NavigateToTasksCommand}"
+                                            Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe97d;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Задачи" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding NavigateToCalculationsCommand}"
+                                            Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe9ef;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Расчеты" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Expander>
+                            <Expander Header="КЛИЕНТЫ"
+                                      IsExpanded="True"
+                                      Style="{DynamicResource ExpanderStyle1}">
+                                <StackPanel>
+                                    <Button Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe9cf;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Компании" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xea2a;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Контакты" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe9c2;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Регионы" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Expander>
+                            <Expander Header="КОМПАНИЯ"
+                                      IsExpanded="True"
+                                      Style="{DynamicResource ExpanderStyle1}">
+                                <StackPanel>
+                                    <Button Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe96e;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Структура организации" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding NavigateToEmployeesCommand}"
+                                            Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe941;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Сотрудники" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource MenuItem}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xe98b;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="{StaticResource PrimeIcons}"
+                                                       Grid.Column="1"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="Должности" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1"
+                  Margin="28,14,28,28">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal">
+                        <Button x:Name="ToggleMenuButton"
+                                Click="ToggleMenuButton_Click"
+                                Height="42"
+                                Margin="0,0,14,0"
+                                Style="{StaticResource Prime.Button.Secondary.Text}">
+                            <TextBlock Style="{StaticResource PrimeIcon.Bars}" />
+                        </Button>
+                        <TextBlock Text="{Binding Navigation.CurrentView.Title}"
+                                   Foreground="#64748B"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2"
+                                Orientation="Horizontal">
+                        <Button Width="42"
+                                Height="42"
+                                Padding="0"
+                                Margin="0,0,14,0"
+                                Style="{StaticResource Prime.Button.Secondary.Text}"
+                                VerticalAlignment="Center">
+                            <TextBlock FontSize="18"
+                                       Style="{StaticResource PrimeIcon.Bell}" />
+                        </Button>
+                        <ToggleButton x:Name="TogglePopupButton"
+                                      Width="42"
+                                      Height="42">
+                            <ToggleButton.Style>
+                                <Style TargetType="{x:Type ButtonBase}"
+                                       BasedOn="{StaticResource Prime.Button.Secondary.Text}">
+                                    <Setter Property="Background"
+                                            Value="#E2E8F0" />
+                                    <Setter Property="Foreground"
+                                            Value="#334155" />
+                                    <!--<Setter Property="Padding"
+                                            Value="0" />
+                                    <Setter Property="p:ButtonAssist.CornerRadius"
+                                            Value="21" />-->
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ButtonBase}">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="21">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ToggleButton.Style>
+                            <StackPanel>
+                                <TextBlock Text="&#xe939;"
+                                           FontSize="18"
+                                           FontFamily="PrimeIcons"
+                                           FontWeight="Regular" />
+                            </StackPanel>
+                        </ToggleButton>
+                        <Popup Placement="Bottom"
+                               IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}"
+                               StaysOpen="{Binding ElementName=TogglePopupButton,Path=IsMouseOver}"
+                               VerticalOffset="2"
+                               AllowsTransparency="True"
+                               MinWidth="175">
+                            <Grid Margin="10">
+                                <Border Background="#FFFFFF"
+                                        BorderBrush="#E2E8F0"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="0,7">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black"
+                                                          ShadowDepth="2"
+                                                          Opacity="0.1"
+                                                          Direction="270"
+                                                          BlurRadius="12" />
+                                    </Border.Effect>
+                                    <StackPanel>
+                                        <Button Content="Профиль"
+                                                Focusable="False"
+                                                Padding="14,8.75"
+                                                FontWeight="Normal"
+                                                HorizontalContentAlignment="Left"
+                                                p:ButtonAssist.CornerRadius="0"
+                                                Style="{StaticResource Prime.Button.Secondary.Text}" />
+                                        <Button Content="Выйти"
+                                                Command="{Binding LogoutCommand}"
+                                                Focusable="False"
+                                                Padding="14,8.75"
+                                                FontWeight="Normal"
+                                                HorizontalContentAlignment="Left"
+                                                p:ButtonAssist.CornerRadius="0"
+                                                Style="{StaticResource Prime.Button.Secondary.Text}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </StackPanel>
+
+                </Grid>
+                <controls:Transitioner CurrentPage="{Binding Navigation.CurrentView}"
+                                       Grid.Row="1" />
+            </Grid>
+        </Grid>
+
+        <controls:Dialog CurrentPage="{Binding DialogService.CurrentView}" />
+
+        <p:Toast ItemsSource="{Binding MessageService.Messages}">
+            <!--<d:ItemsControl.ItemsSource>
+                <CompositeCollection>
+                    <x:Array Type="{x:Type p:Message}">
+                        <p:Message Summary="Success"
+                                   Detail="Message Content" />
+                    </x:Array>
+                </CompositeCollection>
+            </d:ItemsControl.ItemsSource>-->
+            <p:Toast.ItemContainerStyle>
+                <Style TargetType="{x:Type p:ToastItem}">
+                    <Setter Property="Message"
+                            Value="{Binding}" />
+                </Style>
+            </p:Toast.ItemContainerStyle>
+        </p:Toast>
+    </Grid>
+</Window>

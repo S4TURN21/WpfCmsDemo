@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Remake.WebApi</name>
+    </assembly>
+    <members>
+        <member name="P:Remake.WebApi.Entities.Models.Employee.Image">
+            <summary>
+            Фото
+            </summary>
+        </member>
+        <member name="P:Remake.WebApi.Entities.Models.Employee.LastName">
+            <summary>
+            Фамилия сотрудника
+            </summary>
+        </member>
+        <member name="P:Remake.WebApi.Entities.Models.Employee.FirstName">
+            <summary>
+            Имя сотрудника
+            </summary>
+        </member>
+        <member name="P:Remake.WebApi.Entities.Models.Employee.MiddleName">
+            <summary>
+            Отчество сотрудника
+            </summary>
+        </member>
+        <member name="T:Remake.WebApi.Migrations.CreatingIdentityScheme">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.CreatingIdentityScheme.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.CreatingIdentityScheme.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.CreatingIdentityScheme.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Remake.WebApi.Migrations.AddRefreshToken">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddRefreshToken.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddRefreshToken.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddRefreshToken.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Remake.WebApi.Migrations.AddEmployees">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddEmployees.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddEmployees.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddEmployees.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Remake.WebApi.Migrations.AddImageToEmployee">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddImageToEmployee.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddImageToEmployee.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Remake.WebApi.Migrations.AddImageToEmployee.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,248 @@
+﻿<UserControl x:Class="Remake.Wpf.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Remake.Wpf.Views"
+             xmlns:viewmodels="clr-namespace:Remake.Wpf.ViewModels"
+             xmlns:models="clr-namespace:Remake.Wpf.Services"
+             xmlns:converters="clr-namespace:Remake.Wpf.Core.Converters"
+             xmlns:p="clr-namespace:Prime.Wpf;assembly=Prime.Wpf"
+             mc:Ignorable="d"
+             d:FontFamily="Inter"
+             d:FontSize="14"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             d:Background="#FFFFFF"
+             d:DataContext="{d:DesignInstance Type={x:Type viewmodels:EmployeesViewModel}}">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="EmployeesCollectionView"
+                              Source="{Binding Employees}"
+                              Filter="CollectionViewSource_Filter" />
+
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--<StackPanel Orientation="Horizontal">
+            <Button Content="Test Success"
+                    Command="{Binding TestSuccessCommand}"
+                    Margin="0,0,14,0" />
+
+            <Button Content="Test Error"
+                    Command="{Binding TestErrorCommand}"
+                    Margin="0,0,14,0" />
+        </StackPanel>-->
+
+        <Border Background="#FFFFFF"
+                BorderBrush="#E9ECEF"
+                BorderThickness="1,1,1,1"
+                CornerRadius="12"
+                SnapsToDevicePixels="True"
+                Grid.Row="1"
+                Padding="28">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Background="#F8FAFC"
+                        BorderBrush="#E2E8F0"
+                        BorderThickness="0,1"
+                        Grid.Row="0"
+                        Padding="14,10.5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="FilterTextBox"
+                                 p:TextBoxAssist.Placeholder="Поиск"
+                                 TextChanged="FilterTextBox_TextChanged"
+                                 Grid.Column="0"
+                                 Width="280"
+                                 Style="{StaticResource Prime.InputText}" />
+
+                        <Button Command="{Binding AddEmployeeCommand}"
+                                Style="{StaticResource Prime.Button.Outlined}"
+                                Grid.Column="2"
+                                HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource PrimeIcon.User.Plus}"
+                                           Margin="0,0,7,0" />
+                                <TextBlock Text="Добавить" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <DataGrid ItemsSource="{Binding Source={StaticResource EmployeesCollectionView}}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          Grid.Row="1"
+                          Style="{StaticResource DataTable}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="75"
+                                                CanUserResize="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Employee}">
+                                    <Grid>
+                                        <Grid Width="42"
+                                              Height="42">
+                                            <Image Source="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                   RenderOptions.BitmapScalingMode="HighQuality" />
+                                            <Grid.Clip>
+                                                <EllipseGeometry Center="21,21"
+                                                                 RadiusX="21"
+                                                                 RadiusY="21" />
+                                            </Grid.Clip>
+                                        </Grid>
+                                        <Border x:Name="placeholder"
+                                                Visibility="Collapsed"
+                                                Background="#E2E8F0"
+                                                CornerRadius="21"
+                                                Width="42"
+                                                Height="42">
+                                            <Grid>
+                                                <TextBlock Style="{StaticResource PrimeIcon.User}"
+                                                           Foreground="#334155"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                                                <Grid.Clip>
+                                                    <EllipseGeometry Center="21,21"
+                                                                     RadiusX="21"
+                                                                     RadiusY="21" />
+                                                </Grid.Clip>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Image.Length}"
+                                                     Value="0">
+                                            <Setter TargetName="placeholder"
+                                                    Property="Visibility"
+                                                    Value="Visible" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Сотрудник">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Employee}">
+                                    <TextBlock Margin="2,0,0,0">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="FirstName" />
+                                                <Binding Path="LastName" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Подразделение" />
+                        <DataGridTextColumn Header="E-Mail" />
+                        <DataGridTextColumn Header="Телефон" />
+                        <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Center">
+                                        <Button Content="Изменить"
+                                                Command="{Binding DataContext.EditEmployeeCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                CommandParameter="{Binding Id}"
+                                                Margin="0,0,7,0"
+                                                Style="{StaticResource Prime.Button.Secondary.Text}" />
+                                        <Button Content="Удалить"
+                                                Command="{Binding DataContext.DeleteEmployeeCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                CommandParameter="{Binding Id}"
+                                                Style="{StaticResource Prime.Button.Secondary.Text}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <p:Skeleton Visibility="{Binding Loading, Converter={StaticResource BoolToVisibility}}"
+                            d:Visibility="Collapsed"
+                            Grid.Row="0"
+                            Grid.RowSpan="2" />
+            </Grid>
+        </Border>
+
+        <!--<ListView ItemsSource="{Binding Employees}"
+                  Grid.Row="1"
+                  Margin="0,32,0,0">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Focusable"
+                            Value="False" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Фото">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:Employee}">
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Имя и фамилия">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Left" />
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:Employee}">
+                                <TextBlock Margin="2,0,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="FirstName" />
+                                            <Binding Path="LastName" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="E-Mail">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:Employee}">
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Рабочий телефон">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:Employee}">
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="123">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:Employee}">
+                                <Button Content="Edit"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>-->
+    </Grid>
+</UserControl>

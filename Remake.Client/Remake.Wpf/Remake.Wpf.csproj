@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\icon2.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\favicon.png" />
+    <None Remove="Resources\favicon2-64.png" />
+    <None Remove="Resources\favicon2.png" />
+    <None Remove="Resources\icon.ico" />
+    <None Remove="Resources\icon2.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
+    <Content Include="Resources\icon2.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Wpf\Prime.Wpf.csproj" />
+    <ProjectReference Include="..\Remake.Wpf.Controls\Remake.Wpf.Controls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\favicon.png" />
+    <Resource Include="Resources\favicon2-64.png" />
+    <Resource Include="Resources\favicon2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LoginUsers.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LoginUsers.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CalculationsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\TasksView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LoginUsers.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>LoginUsers.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
